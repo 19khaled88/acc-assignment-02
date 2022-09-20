@@ -19,7 +19,9 @@ app.use(cors())
 db
 
 
-
+app.use("/",(req,res)=>{
+    res.send('Welcome to ACC, assignment 02')
+})
 
 app.use('/tours', tourRoute)
 
