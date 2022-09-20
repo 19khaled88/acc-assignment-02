@@ -3,8 +3,13 @@ const Tour = require("../models/tour.model")
 
 exports.getTourServices=async(queryObject,sortQuery)=>{
  
-    const tours = await Tour.find(queryObject).sort(sortQuery.sort).select(sortQuery.fields)
-    return tours
+    const tours = await Tour.find(queryObject)
+                            .skip(sortQuery.skip)
+                            .limit(sortQuery.limit)
+                            .sort(sortQuery.sort)
+                            .select(sortQuery.fields)
+    const totalTourEntry = await Tour.countDocuments(queryObject)
+    return {tours,totalTourEntry}
 }
 
 exports.getTourByIdServices=async(id)=>{

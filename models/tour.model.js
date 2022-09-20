@@ -22,6 +22,7 @@ const TourSchema = new mongoose.Schema({
     },
     view:{
         type:Number,
+        required:[true,'View field must not be empty']
     },
 },{timestamps:true})
 

@@ -7,6 +7,7 @@ const getAllTourController =async (req,res,next)=>{
     const excludeFields = ['sort','page','limit']
     excludeFields.forEach(element=> delete queryObject[element])
     const sortQuery ={}
+
     if(req.query.sort){
         const sortBy = req.query.sort.split(',').join('')
         sortQuery.sort = sortBy
@@ -16,11 +17,19 @@ const getAllTourController =async (req,res,next)=>{
         const fields = req.query.fields.split(',').join('')
         sortQuery.fields = fields
     }
-    
+
+    if(req.query.page){
+        const {page=1, limit=10} = req.query 
+        const skip = (page - 1)*(limit*1)
+        sortQuery.skip = skip
+        sortQuery.limit=parseInt(limit)
+    }
+  
     const tours =await getTourServices(queryObject,sortQuery)
     res.status(200).json({
         status:'Success',
-        data:tours
+        TotalEntry:tours.totalTourEntry,
+        data:tours.tours
     })
    } catch (error) {
     res.status(400).json({
@@ -31,8 +40,8 @@ const getAllTourController =async (req,res,next)=>{
 }
 
 const getTourByIdController=async(req,res,next)=>{
-    const {id} = req.params
     try {
+        const {id} = req.params
         const tour =await getTourByIdServices(id)
         res.status(200).json({
             status:'successful',
@@ -105,7 +114,7 @@ const getTopViewedTourController=async(req,res,next)=>{
 
 const getTopCheapestTourController=async(req,res,next)=>{
     try {
-        const price = -1 
+        const price = 1 
         const limit = 3
         const topViewed =await getTopCheapestTourServices(price, limit)
         res.status(200).json({
